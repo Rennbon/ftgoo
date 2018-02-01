@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+import "folderstat.proto";
+
+package folderstat;
+/**
+* 项目统计服务
+*/
+service FolderstatService{
+    /**
+    * 获取时间段的项目统计
+    */
+    rpc GetFolderStatByDate (GetFolderStatByDateRequest) returns (GetFolderStatByDateResponse); 
+    /**
+    * 获取当前统计
+    */
+    rpc GetFolderStatNow (GetFolderStatNowRequest) returns (GetFolderStatNowResponse);
+}

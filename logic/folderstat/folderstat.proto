@@ -1,0 +1,155 @@
+syntax = "proto3";
+
+package folderstat;
+
+/**
+* 获取当前统计请求参数
+*/
+message GetFolderStatNowRequest{
+    /**
+    *项目id
+    */
+    string folder_id=1;
+}
+/**
+* 获取当前统计返回值
+*/
+message GetFolderStatNowResponse{
+    /**
+    *执行结果
+    */
+    ExecuteResponse result=1;
+    /**
+    *项目统计实体
+    */
+    FolderStatistics folderstat=2;
+}
+
+/**
+*获取时间段的项目统计请求参数
+*/
+message GetFolderStatByDateRequest {
+    /**
+    *项目id
+    */
+    string folder_Id=1;
+    /**
+    *开始时间
+    */
+    int64 start_date=2;
+    /**
+    *截止时间
+    */
+    int64 end_date =3;
+}
+/**
+*获取时间段的项目统计返回值
+*/
+message GetFolderStatByDateResponse{
+    /**
+    *执行结果
+    */
+    ExecuteResponse result=1;
+    /**
+    *项目统计实体数组
+    */
+    repeated FolderStatistics folderstats=2;
+}
+/**
+*项目统计实体
+*/
+message FolderStatistics{
+    /**
+    *项目id
+    */
+    string folder_Id = 1;
+    /**
+    *创建时间
+    */
+    int64 createTime = 2; 
+    /**
+    *统计的当天日期
+    */
+    int64 date = 3;     
+    /**
+    *任务总数  
+    */  
+    int32 amount = 4; 
+    /**
+    *进行中任务总数
+    */
+    int32 underway = 5; 
+    /**
+    *正常状态进行中任务数
+    */
+    int32 underway_n = 6; 
+    /**
+    *逾期进行中任务数
+    */
+    int32 underway_a = 7;
+    /**
+    *未设定截止日期的进行中任务数
+    */
+    int32 underway_u = 8;
+    /**
+    *总逾期时间 单位：小时
+    */
+    int64 timespan = 9; 
+    /**
+    *进行中任务总逾期时间 单位：小时 
+    */
+    int64 timespan_und = 10;
+    /**
+    *已完成任务总逾期时间 单位：小时
+    */
+    int64 timespan_com = 11;
+    /**
+    *已完成任务总数
+    */
+    int32 completed = 12; 
+    /**
+    *正常已完成任务数
+    */
+    int32 completed_n = 13;
+    /**
+    *逾期已完成任务总数
+    */
+    int32 completed_a = 14;  
+    /**
+    *未设定截止日期已完成任务数
+    */
+    int32 completed_u = 15;
+    /**
+    *参与成员数
+    */
+    int32 member_amount = 16;
+    /**
+    *任务负责人数
+    */
+    int32 charge_amount = 17;
+    /**
+    *当天新增任务数
+    */
+    int32 new_tasks = 18;
+    /**
+    *当天完成任务数
+    */
+    int32 completed_tasks = 19;
+    /**
+    *进行中燃尽时间
+    */
+	int64 timespan_burnDown = 20;
+}
+/**
+*执行结果
+*/
+message ExecuteResponse {
+    /**
+    *执行状态
+    */
+    bool success =1;
+    /**
+    *信息
+    */
+    string err_msg = 2;
+}
