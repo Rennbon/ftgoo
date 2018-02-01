@@ -198,19 +198,19 @@ func (FolderStatService) GetFolderStatByDate(request *pb.GetFolderStatByDateRequ
 		realEndDate = endDate.Add(ms)
 	}
 	//历史时间段数据
-	fstses, err := tcdb.GetFolderDailyStatisticsByDate(request.Folder_Id, startTime, realEndDate)
+	fstses, err := tcdb.GetFolderDailyStatisticsByDate(request.FolderId, startTime, realEndDate)
 	if err != nil {
 		response.Result = &pb.ExecuteResponse{Success: false, ErrMsg: err.Error()}
 		return response, err
 	}
 	//填充当天实时数据
 	if endDate.Equal(dateNow) {
-		tasks, err := tcdb.GetTasksByFolderIdAndTime(request.Folder_Id, time.Time{})
+		tasks, err := tcdb.GetTasksByFolderIdAndTime(request.FolderId, time.Time{})
 		if err != nil {
 			response.Result = &pb.ExecuteResponse{Success: false, ErrMsg: err.Error()}
 			return response, err
 		}
-		todayFsts, err := aggregateFolderStats(tasks, request.Folder_Id, timeNow, dateNow)
+		todayFsts, err := aggregateFolderStats(tasks, request.FolderId, timeNow, dateNow)
 		if err != nil {
 			return nil, err
 		}
@@ -234,7 +234,7 @@ func (FolderStatService) GetFolderStatByDate(request *pb.GetFolderStatByDateRequ
 					},
 				)
 			if !existFlag {
-				fstses = append(fstses, &FolderStatistics{Date: tempDate, FolderId: request.Folder_Id})
+				fstses = append(fstses, &FolderStatistics{Date: tempDate, FolderId: request.FolderId})
 			}
 		}
 	}
@@ -245,7 +245,7 @@ func (FolderStatService) GetFolderStatByDate(request *pb.GetFolderStatByDateRequ
 				return p.(FolderStatistics).Date
 			},
 		).ToSlice(&fstses)
-	response.Result.Success = true
+	response.Result = &pb.ExecuteResponse{Success: true}
 	response.Folderstats = cvt_mg_pb_folderstatses(fstses)
 	return response, nil
 }
@@ -263,7 +263,7 @@ func (FolderStatService) GetFolderStatNow(request *pb.GetFolderStatNowRequest) (
 	if err != nil {
 		return nil, err
 	}
-	response.Result.Success = true
+	response.Result = &pb.ExecuteResponse{Success: true, ErrMsg: ""}
 	response.Folderstat = cvt_mg_pb_folderstatsone(fsts)
 	return response, nil
 }

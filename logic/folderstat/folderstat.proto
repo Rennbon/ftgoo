@@ -32,7 +32,7 @@ message GetFolderStatByDateRequest {
     /**
     *项目id
     */
-    string folder_Id=1;
+    string folder_id=1;
     /**
     *开始时间
     */
@@ -62,7 +62,7 @@ message FolderStatistics{
     /**
     *项目id
     */
-    string folder_Id = 1;
+    string folder_id = 1;
     /**
     *创建时间
     */
