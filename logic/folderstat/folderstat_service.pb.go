@@ -7,22 +7,141 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 
+import (
+	context "golang.org/x/net/context"
+	grpc "google.golang.org/grpc"
+)
+
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConn
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion4
+
+// Client API for FolderstatService service
+
+type FolderstatServiceClient interface {
+	// *
+	// 获取时间段的项目统计
+	GetFolderStatByDate(ctx context.Context, in *GetFolderStatByDateRequest, opts ...grpc.CallOption) (*GetFolderStatByDateResponse, error)
+	// *
+	// 获取当前统计
+	GetFolderStatNow(ctx context.Context, in *GetFolderStatNowRequest, opts ...grpc.CallOption) (*GetFolderStatNowResponse, error)
+}
+
+type folderstatServiceClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewFolderstatServiceClient(cc *grpc.ClientConn) FolderstatServiceClient {
+	return &folderstatServiceClient{cc}
+}
+
+func (c *folderstatServiceClient) GetFolderStatByDate(ctx context.Context, in *GetFolderStatByDateRequest, opts ...grpc.CallOption) (*GetFolderStatByDateResponse, error) {
+	out := new(GetFolderStatByDateResponse)
+	err := grpc.Invoke(ctx, "/folderstat.FolderstatService/GetFolderStatByDate", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *folderstatServiceClient) GetFolderStatNow(ctx context.Context, in *GetFolderStatNowRequest, opts ...grpc.CallOption) (*GetFolderStatNowResponse, error) {
+	out := new(GetFolderStatNowResponse)
+	err := grpc.Invoke(ctx, "/folderstat.FolderstatService/GetFolderStatNow", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for FolderstatService service
+
+type FolderstatServiceServer interface {
+	// *
+	// 获取时间段的项目统计
+	GetFolderStatByDate(context.Context, *GetFolderStatByDateRequest) (*GetFolderStatByDateResponse, error)
+	// *
+	// 获取当前统计
+	GetFolderStatNow(context.Context, *GetFolderStatNowRequest) (*GetFolderStatNowResponse, error)
+}
+
+func RegisterFolderstatServiceServer(s *grpc.Server, srv FolderstatServiceServer) {
+	s.RegisterService(&_FolderstatService_serviceDesc, srv)
+}
+
+func _FolderstatService_GetFolderStatByDate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFolderStatByDateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FolderstatServiceServer).GetFolderStatByDate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/folderstat.FolderstatService/GetFolderStatByDate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FolderstatServiceServer).GetFolderStatByDate(ctx, req.(*GetFolderStatByDateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FolderstatService_GetFolderStatNow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFolderStatNowRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FolderstatServiceServer).GetFolderStatNow(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/folderstat.FolderstatService/GetFolderStatNow",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FolderstatServiceServer).GetFolderStatNow(ctx, req.(*GetFolderStatNowRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _FolderstatService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "folderstat.FolderstatService",
+	HandlerType: (*FolderstatServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetFolderStatByDate",
+			Handler:    _FolderstatService_GetFolderStatByDate_Handler,
+		},
+		{
+			MethodName: "GetFolderStatNow",
+			Handler:    _FolderstatService_GetFolderStatNow_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "folderstat_service.proto",
+}
+
 func init() { proto.RegisterFile("folderstat_service.proto", fileDescriptor1) }
 
 var fileDescriptor1 = []byte{
-	// 143 bytes of a gzipped FileDescriptorProto
+	// 145 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x48, 0xcb, 0xcf, 0x49,
 	0x49, 0x2d, 0x2a, 0x2e, 0x49, 0x2c, 0x89, 0x2f, 0x4e, 0x2d, 0x2a, 0xcb, 0x4c, 0x4e, 0xd5, 0x2b,
-	0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x42, 0xc8, 0x48, 0x09, 0x20, 0xd8, 0x10, 0x59, 0xa3, 0x5b,
-	0x8c, 0x5c, 0x82, 0x6e, 0x70, 0xc1, 0x60, 0x88, 0x4e, 0xa1, 0x34, 0x2e, 0x61, 0xf7, 0xd4, 0x12,
+	0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x42, 0xc8, 0x48, 0x09, 0x20, 0xd8, 0x10, 0x59, 0xa3, 0x7b,
+	0x8c, 0x5c, 0x82, 0x6e, 0x70, 0xc1, 0x60, 0x88, 0x4e, 0xa1, 0x0c, 0x2e, 0x61, 0xf7, 0xd4, 0x12,
 	0x88, 0x78, 0x70, 0x49, 0x62, 0x89, 0x53, 0xa5, 0x4b, 0x62, 0x49, 0xaa, 0x90, 0x9a, 0x1e, 0x92,
 	0x7e, 0x2c, 0x0a, 0x82, 0x52, 0x0b, 0x4b, 0x53, 0x8b, 0x4b, 0xa4, 0xd4, 0x09, 0xaa, 0x2b, 0x2e,
-	0xc8, 0xcf, 0x2b, 0x4e, 0x15, 0x8a, 0xe5, 0x12, 0x40, 0x91, 0xf6, 0xcb, 0x2f, 0x17, 0x52, 0xc6,
-	0xa9, 0xd9, 0x2f, 0xbf, 0x1c, 0x66, 0x83, 0x0a, 0x7e, 0x45, 0x10, 0xe3, 0x93, 0xd8, 0xc0, 0x7e,
-	0x34, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0xd5, 0x74, 0xe2, 0x4b, 0x1d, 0x01, 0x00, 0x00,
+	0xc8, 0xcf, 0x2b, 0x4e, 0x55, 0x62, 0x10, 0x8a, 0xe7, 0x12, 0x40, 0x51, 0xe0, 0x97, 0x5f, 0x2e,
+	0xa4, 0x8c, 0x53, 0xbb, 0x5f, 0x7e, 0x39, 0xcc, 0x0e, 0x15, 0xfc, 0x8a, 0x60, 0x16, 0x24, 0xb1,
+	0x81, 0xfd, 0x69, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0xa8, 0x10, 0xc9, 0x08, 0x21, 0x01, 0x00,
+	0x00,
 }
