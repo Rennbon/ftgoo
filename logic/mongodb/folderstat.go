@@ -87,7 +87,7 @@ func dailyFlushingBetween(start time.Time, end time.Time) error {
 			},
 		}
 		err = tcol.Find(tqy).Select(tpro).All(&tasks) */
-		tasks, err := tcdb.GetTasksCreateBefore(folder.FolderId, dateNow)
+		tasks, err := tcdb.GetTasksByFolderIdAndTime(folder.FolderId, dateNow)
 		if err != nil {
 			log.Print(err)
 			return err
@@ -171,7 +171,7 @@ func dailyFlushingBetween(start time.Time, end time.Time) error {
 
 		/* fscol := session.DB(db_taskcenter).C(col_folderStat)
 		err = fscol.Insert(fsts) */
-		ok, err = tcdb.InsertFolderStatistics(fsts)
+		ok, err := tcdb.InsertFolderStatistics(fsts)
 		if err != nil {
 			log.Print(err)
 		}
@@ -192,7 +192,7 @@ func (FolderStatService) GetFolderStatByDate(request *pb.GetFolderStatByDateRequ
 	endDate := tool.GetDate(endTime)
 	ms, _ := time.ParseDuration("-1ms")
 	realEndDate := endDate.AddDate(0, 0, 1).Add(ms)
-	timeNow := time.Now.Local()
+	timeNow := time.Now().Local()
 	dateNow := tool.GetDate(timeNow)
 	if endDate.Equal(dateNow) {
 		realEndDate = endDate.Add(ms)
@@ -220,7 +220,7 @@ func (FolderStatService) GetFolderStatByDate(request *pb.GetFolderStatByDateRequ
 	}
 	/////////////////////////////////排序填充无数据日期START//////////////////////////////////
 	startDate := tool.GetDate(startTime)
-	dayCount := int(endDate.Sub(startDate).Hours / 24)
+	dayCount := int(endDate.Sub(startDate).Hours() / 24)
 
 	if len(fstses) != dayCount+1 {
 		var tempDate time.Time
@@ -239,13 +239,13 @@ func (FolderStatService) GetFolderStatByDate(request *pb.GetFolderStatByDateRequ
 		}
 	}
 	///////////////////////////////////排序填充无数据日期END//////////////////////////////
-	fstses = Form(fstses).
+	From(fstses).
 		OrderBy(
 			func(p interface{}) interface{} {
 				return p.(FolderStatistics).Date
 			},
-		)
-	return fstses, nil
+		).ToSlice(&fstses)
+	return response, nil
 }
 func (FolderStatService) GetFolderStatNow(request *pb.GetFolderStatNowRequest) (*pb.GetFolderStatNowResponse, error) {
 	response := &pb.GetFolderStatNowResponse{}
@@ -256,11 +256,10 @@ func (FolderStatService) GetFolderStatNow(request *pb.GetFolderStatNowRequest) (
 	}
 	timeNow := time.Now().Local()
 	dateNow := tool.GetDate(timeNow)
-	fsts, err := aggregateFolderStats(tasks, request.Folder_Id, timeNow, dateNow)
+	fsts, err := aggregateFolderStats(tasks, request.FolderId, timeNow, dateNow)
 	if err != nil {
 		return nil, err
 	}
-	fsts
 	return response, nil
 }
 
