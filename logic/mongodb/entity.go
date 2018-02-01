@@ -13,22 +13,22 @@ type FolderStatistics struct {
 	FolderId          string        `bson:"fid"` //项目id
 	CreateTime        time.Time     `bson:"ct"`  //创建时间
 	Date              time.Time     `bson:"dt"`  //统计的当天日期
-	Amount            int           `bson:"at"`  //任务总数
-	Underway          int           `bson:"u"`   //进行中任务总数
-	Underway_N        int           `bson:"un"`  //正常状态进行中任务数
-	Underway_A        int           `bson:"ua"`  //逾期进行中任务数
-	Underway_U        int           `bson:"uu"`  //未设定截止日期的进行中任务数
+	Amount            int32         `bson:"at"`  //任务总数
+	Underway          int32         `bson:"u"`   //进行中任务总数
+	Underway_N        int32         `bson:"un"`  //正常状态进行中任务数
+	Underway_A        int32         `bson:"ua"`  //逾期进行中任务数
+	Underway_U        int32         `bson:"uu"`  //未设定截止日期的进行中任务数
 	Timespan          int64         `bson:"t"`   //总逾期时间 单位：小时
 	Timespan_Und      int64         `bson:"tu"`  //进行中任务总逾期时间 单位：小时
 	Timespan_Com      int64         `bson:"tc"`  //已完成任务总逾期时间 单位：小时
-	Completed         int           `bson:"c"`   //已完成任务总数
-	Completed_N       int           `bson:"cn"`  //正常已完成任务数
-	Completed_A       int           `bson:"ca"`  //逾期已完成任务总数
-	Completed_U       int           `bson:"cu"`  //未设定截止日期已完成任务数
-	MemberAmount      int           `bson:"ma"`  //参与成员数
-	ChargeAmount      int           `bson:"cha"` //任务负责人数
-	NewTasks          int           `bson:"nts"` //当天新增任务数
-	CompletedTasks    int           `bson:"cts"` //当天完成任务数
+	Completed         int32         `bson:"c"`   //已完成任务总数
+	Completed_N       int32         `bson:"cn"`  //正常已完成任务数
+	Completed_A       int32         `bson:"ca"`  //逾期已完成任务总数
+	Completed_U       int32         `bson:"cu"`  //未设定截止日期已完成任务数
+	MemberAmount      int32         `bson:"ma"`  //参与成员数
+	ChargeAmount      int32         `bson:"cha"` //任务负责人数
+	NewTasks          int32         `bson:"nts"` //当天新增任务数
+	CompletedTasks    int32         `bson:"cts"` //当天完成任务数
 	Timespan_BurnDown int64         `bson:"tbd"` //进行中燃尽时间
 }
 

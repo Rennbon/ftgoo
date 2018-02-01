@@ -171,7 +171,7 @@ func dailyFlushingBetween(start time.Time, end time.Time) error {
 
 		/* fscol := session.DB(db_taskcenter).C(col_folderStat)
 		err = fscol.Insert(fsts) */
-		ok, err := tcdb.InsertFolderStatistics(fsts)
+		_, err = tcdb.InsertFolderStatistics(fsts)
 		if err != nil {
 			log.Print(err)
 		}
@@ -245,8 +245,11 @@ func (FolderStatService) GetFolderStatByDate(request *pb.GetFolderStatByDateRequ
 				return p.(FolderStatistics).Date
 			},
 		).ToSlice(&fstses)
+	response.Result.Success = true
+	response.Folderstats = cvt_mg_pb_folderstatses(fstses)
 	return response, nil
 }
+
 func (FolderStatService) GetFolderStatNow(request *pb.GetFolderStatNowRequest) (*pb.GetFolderStatNowResponse, error) {
 	response := &pb.GetFolderStatNowResponse{}
 	tasks, err := tcdb.GetTasksByFolderIdAndTime(request.FolderId, time.Time{})
@@ -260,6 +263,8 @@ func (FolderStatService) GetFolderStatNow(request *pb.GetFolderStatNowRequest) (
 	if err != nil {
 		return nil, err
 	}
+	response.Result.Success = true
+	response.Folderstat = cvt_mg_pb_folderstatsone(fsts)
 	return response, nil
 }
 
@@ -267,7 +272,7 @@ func (FolderStatService) GetFolderStatNow(request *pb.GetFolderStatNowRequest) (
 tasks:任务数组，folderId:项目id，compareTime:对比的时间,date:统计所属时间段，
 createTime未赋值,tasks len=0是返回nil,nil */
 func aggregateFolderStats(tasks []*Task, folderId string, compareTime time.Time, date time.Time) (*FolderStatistics, error) {
-	tasksCount := len(tasks)
+	tasksCount := int32(len(tasks))
 	if tasksCount == 0 {
 		return nil, nil
 	}
@@ -336,8 +341,8 @@ func aggregateFolderStats(tasks []*Task, folderId string, compareTime time.Time,
 	}
 	fsts.Timespan = fsts.Timespan_Und + fsts.Timespan_Com
 	From(chargeIds).Distinct().ToSlice(&chargeIds)
-	fsts.ChargeAmount = len(chargeIds)
+	fsts.ChargeAmount = int32(len(chargeIds))
 	From(memberIds).Distinct().ToSlice(&memberIds)
-	fsts.MemberAmount = len(memberIds)
+	fsts.MemberAmount = int32(len(memberIds))
 	return fsts, nil
 }
