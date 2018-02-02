@@ -45,7 +45,7 @@ func (taskCenter) GetTasksByFolderIdAndTime(folderId string, date time.Time) ([]
 		"FolderID": folderId,
 		"IsDelete": false,
 	}
-	if date.Equal(time.Time{}) {
+	if !date.Equal(time.Time{}) {
 		query["CreateTime"] = bson.M{
 			"$lt": date,
 		}

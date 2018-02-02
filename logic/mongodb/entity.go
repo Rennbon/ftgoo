@@ -45,17 +45,17 @@ const (
 )
 
 type Task struct {
-	TaskId           string       `bson:"TaskID"`           //任务ID
-	FolderId         string       `bson:"FolderID"`         //所属项目ID
-	Deadline         time.Time    `bson:"Deadline"`         //截止时间
-	StartTime        time.Time    `bson:"stm"`              //开始时间
-	ChargeAccountId  string       `bson:"ChargeAccountID"`  //负责人
-	Status           TaskStatus   `bson:"Status"`           //状态
-	StatusModifyTime time.Time    `bson:"StatusModifyTime"` //修改时间，配合status为1即完成时间
-	UpdateTime       time.Time    `bson:"UpdateTime"`       //更新时间
-	CreateTime       time.Time    `bson:"CreateTime"`       //创建时间
-	IsDelete         bool         `bson:"IsDelete"`         //是否删除
-	Members          []TaskMember `bson:"Members"`          //成员
+	TaskId           string        `bson:"TaskID"`           //任务ID
+	FolderId         string        `bson:"FolderID"`         //所属项目ID
+	Deadline         time.Time     `bson:"Deadline"`         //截止时间
+	StartTime        time.Time     `bson:"stm"`              //开始时间
+	ChargeAccountId  string        `bson:"ChargeAccountID"`  //负责人
+	Status           TaskStatus    `bson:"Status"`           //状态
+	StatusModifyTime time.Time     `bson:"StatusModifyTime"` //修改时间，配合status为1即完成时间
+	UpdateTime       time.Time     `bson:"UpdateTime"`       //更新时间
+	CreateTime       time.Time     `bson:"CreateTime"`       //创建时间
+	IsDelete         bool          `bson:"IsDelete"`         //是否删除
+	Members          []*TaskMember `bson:"Members"`          //成员
 }
 
 type MemberType int
@@ -72,7 +72,7 @@ const (
 )
 
 type TaskMember struct {
-	aId    string       `bson:"AccountID"`   //成员id
+	AId    string       `bson:"AccountID"`   //成员id
 	Type   MemberType   `bson:"Type"`        //成员类型  0:成员 1:托付者 （其他无用，这里只读）
 	Status MemberStatus `bson:"ApplyStatus"` //状态 0:正常 （其他无用，这里只读）
 }

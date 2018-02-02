@@ -19,7 +19,7 @@ func cvt_mg_pb_folderstatsone(model *FolderStatistics) *pb.FolderStatistics {
 		return nil
 	}
 	return &pb.FolderStatistics{
-		Folder_Id:        model.FolderId,                   //1
+		FolderId:         model.FolderId,                   //1
 		CreateTime:       time.Time.Unix(model.CreateTime), //2
 		Date:             time.Time.Unix(model.Date),       //3
 		Amount:           model.Amount,                     //4

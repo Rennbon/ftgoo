@@ -18,8 +18,8 @@ type FolderStatService struct {
 var tcdb taskCenter
 
 //项目统计日刷
-func (FolderStatService) DailyFlushing() error {
-	dateRight := tool.GetDate(time.Now().Local())
+func (FolderStatService) DailyFlushing(date time.Time) error {
+	dateRight := tool.GetDate(date)
 	dateLeft := dateRight.AddDate(0, -1, 0)
 	iceAge := time.Date(2005, 1, 1, 0, 0, 0, 0, time.Local)
 	i := 0
@@ -39,54 +39,17 @@ func (FolderStatService) DailyFlushing() error {
 	return nil
 }
 func dailyFlushingBetween(start time.Time, end time.Time) error {
-	/* 	session := CloneTaskCenter()
-	   	defer session.Close()
-	   	fcol := session.DB(db_taskcenter).C(col_folder)
-	   	fqy := bson.M{
-	   		"Archived":   false,
-	   		"Predefined": false,
-	   		"CreateTime": bson.M{
-	   			"$lt":  end,
-	   			"$gte": start,
-	   		},
-	   	}
-	   	projection := bson.M{
-	   		"FolderID": 1,
-	   	} */
-	//var folders []Folder
-	//所有符合条件的项目
-	//err := fcol.Find(fqy).Select(projection).All(&folders)
 	folders, err := tcdb.GetFoldersCreateTimeBetween(start, end)
 	if err != nil {
 		log.Print(err)
 		return err
 	}
-	/* tcol := session.DB(db_taskcenter).C(col_task)
-	tpro := bson.M{
-		"Status":           1,
-		"Deadline":         1,
-		"stm":              1,
-		"ChargeAccountID":  1,
-		"Members":          1,
-		"CreateTime":       1,
-		"StatusModifyTime": 1,
-	} */
-
 	dateNow := tool.GetDate(time.Now().Local())             //当前时间
 	fstsDate := dateNow.AddDate(0, 0, -1)                   //当前时间前一天，即需要统计的时间
 	ddCompare := dateNow.Add(time.Hour * time.Duration(-1)) //对比时间
 
 	//遍历项目
 	for _, folder := range folders {
-		/* var tasks []Task
-		tqy := bson.M{
-			"FolderID": folder.FolderId,
-			"IsDelete": false,
-			"CreateTime": bson.M{
-				"$lt": dateNow,
-			},
-		}
-		err = tcol.Find(tqy).Select(tpro).All(&tasks) */
 		tasks, err := tcdb.GetTasksByFolderIdAndTime(folder.FolderId, dateNow)
 		if err != nil {
 			log.Print(err)
@@ -100,77 +63,6 @@ func dailyFlushingBetween(start time.Time, end time.Time) error {
 			break
 		}
 		fsts.CreateTime = time.Now().Local()
-		/*fsts := &FolderStatistics{}
-		fsts.FolderId = folder.FolderId
-		fsts.Date = fstsDate
-		fsts.CreateTime = time.Now().Local()
-		fsts.Amount = len(tasks)
-		var (
-			chargeIds []string //存负责人总数
-			memberIds []string //存成员总数
-		)
-
-		for _, task := range tasks {
-			chargeIds = append(chargeIds, task.ChargeAccountId)
-			for _, member := range task.Members {
-				if member.Status == Cs_Normal && (member.Type == Cs_Member || member.Type == Cs_Releaser) {
-					memberIds = append(memberIds, member.aId)
-				}
-			}
-			if tool.GetDate(task.CreateTime) == fstsDate {
-				fsts.NewTasks++
-			}
-
-			if task.Status == Cs_Incomplete { //进行中
-				fsts.Underway++ //进行中任务书
-				if task.Deadline.After(ddCompare) {
-					fsts.Underway_N++ //正常状态进行中任务数
-					if task.Deadline.After(maxDate) {
-						fsts.Underway_U++ //未设定截止日期的进行中任务数
-					} else {
-
-					}
-				} else {
-					fsts.Underway_A++                                                //逾期进行中任务数
-					fsts.Timespan_Und += int64(ddCompare.Sub(task.Deadline).Hours()) //进行中任务总逾期时间 单位：小时
-
-				}
-
-				if task.Deadline.Before(maxDate) {
-					fsts.Timespan_BurnDown += int64(task.Deadline.Sub(ddCompare).Hours()) //时间燃尽图
-				}
-
-			} else { //已完成
-				fsts.Completed++ //已完成任务总数
-				if task.Deadline.Before(task.StatusModifyTime) {
-					fsts.Timespan_Com += int64(task.StatusModifyTime.Sub(task.Deadline).Hours()) //已完成任务总逾期时间 单位：小时
-					fsts.Completed_A++                                                           //逾期已完成任务总数
-				} else {
-					fsts.Completed_N++ //正常已完成任务数
-					if task.Deadline == maxDate {
-						fsts.Completed_U++ //未设定截止日期已完成任务数
-					}
-				}
-
-				if tool.GetDate(task.StatusModifyTime) == fstsDate {
-					fsts.CompletedTasks++
-				}
-			}
-		}
-		if fsts.Underway_A > 0 && fsts.Timespan_Und == 0 {
-			fsts.Timespan_Und = 1
-		}
-		if fsts.Completed_A > 0 && fsts.Timespan_Com == 0 {
-			fsts.Timespan_Com = 1
-		}
-		fsts.Timespan = fsts.Timespan_Und + fsts.Timespan_Com
-		From(chargeIds).Distinct().ToSlice(&chargeIds)
-		fsts.ChargeAmount = len(chargeIds)
-		From(memberIds).Distinct().ToSlice(&memberIds)
-		fsts.MemberAmount = len(memberIds) */
-
-		/* fscol := session.DB(db_taskcenter).C(col_folderStat)
-		err = fscol.Insert(fsts) */
 		_, err = tcdb.InsertFolderStatistics(fsts)
 		if err != nil {
 			log.Print(err)
@@ -221,16 +113,18 @@ func (FolderStatService) GetFolderStatByDate(request *pb.GetFolderStatByDateRequ
 	/////////////////////////////////排序填充无数据日期START//////////////////////////////////
 	startDate := tool.GetDate(startTime)
 	dayCount := int(endDate.Sub(startDate).Hours() / 24)
-
 	if len(fstses) != dayCount+1 {
 		var tempDate time.Time
 		for i := 0; i <= dayCount; i++ {
+			if len(fstses) == dayCount+1 {
+				break
+			}
 			tempDate = startDate.AddDate(0, 0, i)
 
 			existFlag := From(fstses).
 				AnyWith(
 					func(p interface{}) bool {
-						return p.(FolderStatistics).Date.Equal(tempDate)
+						return p.(*FolderStatistics).Date.Equal(tempDate)
 					},
 				)
 			if !existFlag {
@@ -239,14 +133,15 @@ func (FolderStatService) GetFolderStatByDate(request *pb.GetFolderStatByDateRequ
 		}
 	}
 	///////////////////////////////////排序填充无数据日期END//////////////////////////////
+	var fstsesSort []*FolderStatistics
 	From(fstses).
-		OrderBy(
-			func(p interface{}) interface{} {
-				return p.(FolderStatistics).Date
+		SortT(
+			func(f1 *FolderStatistics, f2 *FolderStatistics) bool {
+				return f1.Date.Before(f2.Date)
 			},
-		).ToSlice(&fstses)
+		).ToSlice(&fstsesSort)
 	response.Result = &pb.ExecuteResponse{Success: true}
-	response.Folderstats = cvt_mg_pb_folderstatses(fstses)
+	response.Folderstats = cvt_mg_pb_folderstatses(fstsesSort)
 	return response, nil
 }
 
@@ -269,8 +164,8 @@ func (FolderStatService) GetFolderStatNow(request *pb.GetFolderStatNowRequest) (
 }
 
 /* 聚合任务到项目统计实体
-tasks:任务数组，folderId:项目id，compareTime:对比的时间,date:统计所属时间段，
-createTime未赋值,tasks len=0是返回nil,nil */
+tasks:任务数组，folderId:�������������id，compareTime:��比�����时间,date:统计所属时间段，
+createTime未赋值,tasks len=0��返回nil,nil */
 func aggregateFolderStats(tasks []*Task, folderId string, compareTime time.Time, date time.Time) (*FolderStatistics, error) {
 	tasksCount := int32(len(tasks))
 	if tasksCount == 0 {
@@ -290,7 +185,7 @@ func aggregateFolderStats(tasks []*Task, folderId string, compareTime time.Time,
 		chargeIds = append(chargeIds, task.ChargeAccountId)
 		for _, member := range task.Members {
 			if member.Status == Cs_Normal && (member.Type == Cs_Member || member.Type == Cs_Releaser) {
-				memberIds = append(memberIds, member.aId)
+				memberIds = append(memberIds, member.AId)
 			}
 		}
 		if tool.GetDate(task.CreateTime) == date {
