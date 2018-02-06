@@ -38,7 +38,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	//pb.RegisterFolderstatServiceServer(s, &fstatServer{})
+	pb.RegisterFolderstatServiceServer(s, &fstatServer{})
 	reflection.Register(s)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
