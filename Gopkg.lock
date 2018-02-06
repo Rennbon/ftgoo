@@ -4,7 +4,7 @@
 [[projects]]
   branch = "master"
   name = "github.com/Rennbon/ftgoo"
-  packages = ["config","logic/errors","logic/folderstat","logic/mongodb"]
+  packages = ["config","logic/errors","logic/folderstat","logic/mongodb","tool"]
   revision = "4c9ae6a5e7f4a0d9ca1ad37a72ca7d079a34c828"
 
 [[projects]]
@@ -124,6 +124,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "80cb2866471018f9521e1cc3370dcbbcd0f44d80b5fafc8f8814be3e036fcd7c"
+  inputs-digest = "07bc6cd97c5f40ad847890c251e5e56c9ccd9072f59f3b16b52d1cd0aa948ed6"
   solver-name = "gps-cdcl"
   solver-version = 1
