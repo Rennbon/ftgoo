@@ -1,9 +1,10 @@
 package mongodb
 
 import (
-	"ftgoo/tool"
 	"log"
 	"time"
+
+	"github.com/Rennbon/ftgoo/tool"
 
 	pb "github.com/Rennbon/ftgoo/logic/folderstat"
 
