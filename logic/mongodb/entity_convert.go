@@ -1,8 +1,9 @@
 package mongodb
 
 import (
-	pb "ftgoo/logic/folderstat"
 	"time"
+
+	pb "github.com/Rennbon/ftgoo/logic/folderstat"
 )
 
 func cvt_mg_pb_folderstatses(models []*FolderStatistics) []*pb.FolderStatistics {

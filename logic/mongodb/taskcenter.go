@@ -3,7 +3,7 @@ package mongodb
 import (
 	"time"
 
-	"ftgoo/logic/errors"
+	"github.com/Rennbon/ftgoo/logic/errors"
 
 	"gopkg.in/mgo.v2/bson"
 )

@@ -1,8 +1,9 @@
 package main
 
 import (
-	"ftgoo/logic/mongodb"
 	"time"
+
+	"github.com/Rennbon/ftgoo/logic/mongodb"
 )
 
 func main() {

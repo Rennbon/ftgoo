@@ -1,10 +1,11 @@
 package mongodb
 
 import (
-	pb "ftgoo/logic/folderstat"
 	"log"
 	"testing"
 	"time"
+
+	pb "github.com/Rennbon/ftgoo/logic/folderstat"
 )
 
 type ucTest struct {

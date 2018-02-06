@@ -5,9 +5,9 @@ import (
 	"log"
 	"time"
 
-	pb "ftgoo/logic/folderstat"
+	pb "github.com/Rennbon/ftgoo/logic/folderstat"
 
-	"ftgoo/logic/errors"
+	"github.com/Rennbon/ftgoo/logic/errors"
 
 	. "github.com/ahmetb/go-linq"
 )

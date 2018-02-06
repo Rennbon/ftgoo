@@ -4,9 +4,9 @@ import (
 	"log"
 	"net"
 
-	pb "ftgoo/logic/folderstat"
+	pb "github.com/Rennbon/ftgoo/logic/folderstat"
 
-	"ftgoo/logic/mongodb"
+	"github.com/Rennbon/ftgoo/logic/mongodb"
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"

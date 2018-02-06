@@ -3,7 +3,7 @@ package mongodb
 import (
 	"time"
 
-	cnf "ftgoo/config"
+	cnf "github.com/Rennbon/ftgoo/config"
 
 	"gopkg.in/mgo.v2"
 )

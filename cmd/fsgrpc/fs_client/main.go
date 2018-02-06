@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	pb "ftgoo/logic/folderstat"
+	pb "github.com/Rennbon/ftgoo/logic/folderstat"
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
