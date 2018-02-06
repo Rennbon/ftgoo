@@ -18,8 +18,8 @@ var filePath string
 func init() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yml")
-	//viper.AddConfigPath(".")
-	viper.AddConfigPath("/Users/zhubin/go/src/ftgoo/config/")
+	viper.AddConfigPath(".")
+	//viper.AddConfigPath("/Users/zhubin/go/src/ftgoo/config/")
 }
 func LoadConfig() (*Config, error) {
 	if err := viper.ReadInConfig(); err != nil {

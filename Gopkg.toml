@@ -22,12 +22,28 @@
 
 
 [[constraint]]
+  name = "github.com/ahmetb/go-linq"
+  version = "3.0.0"
+
+[[constraint]]
   name = "github.com/fsnotify/fsnotify"
   version = "1.4.7"
 
 [[constraint]]
+  name = "github.com/golang/protobuf"
+  version = "1.0.0"
+
+[[constraint]]
   name = "github.com/spf13/viper"
   version = "1.0.0"
+
+[[constraint]]
+  branch = "master"
+  name = "golang.org/x/net"
+
+[[constraint]]
+  name = "google.golang.org/grpc"
+  version = "1.9.2"
 
 [[constraint]]
   branch = "v2"

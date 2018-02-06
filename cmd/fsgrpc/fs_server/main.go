@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	port = ":12345"
+	port = ":9091"
 )
 
 var service mongodb.FolderStatService
@@ -33,6 +33,7 @@ func (*fstatServer) GetFolderStatNow(ctx context.Context, param *pb.GetFolderSta
 
 func main() {
 	lis, err := net.Listen("tcp", port)
+	log.Println("server start")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -42,4 +43,5 @@ func main() {
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
+	log.Println("server start over")
 }
