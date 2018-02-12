@@ -20,9 +20,15 @@ var (
 )
 
 func init() {
-	conf, error := cnf.LoadConfig()
-	if error != nil {
-		panic(error)
+	conf, err := cnf.LoadConfig()
+	if err != nil {
+		panic(err)
+	}
+	var keys []string
+	keys = append(keys, "taskcenter")
+	err = cnf.CheckConfig(conf, keys)
+	if err != nil {
+		panic(err)
 	}
 	loadTaskSession(conf)
 }

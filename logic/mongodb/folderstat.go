@@ -76,7 +76,7 @@ func dailyFlushingBetween(start time.Time, end time.Time) error {
 //获取时间段内的项目统计
 func (FolderStatService) GetFolderStatByDate(request *pb.GetFolderStatByDateRequest) (*pb.GetFolderStatByDateResponse, error) {
 	response := &pb.GetFolderStatByDateResponse{}
-	if request.StartDate > request.EndDate {
+	if request.StartDate > request.EndDate || !tool.CheckUnix(request.StartDate) || !tool.CheckUnix(request.EndDate) {
 		response.Result = &pb.ExecuteResponse{Success: false, ErrMsg: errors.ERR_PARAMETER.Error()}
 		return response, errors.ERR_PARAMETER
 	}

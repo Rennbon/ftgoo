@@ -4,6 +4,8 @@ import (
 	"log"
 	"net"
 
+	//"github.com/Rennbon/ftgoo/config"
+
 	pb "github.com/Rennbon/ftgoo/logic/folderstat"
 
 	"github.com/Rennbon/ftgoo/logic/mongodb"
@@ -19,6 +21,8 @@ const (
 
 var service mongodb.FolderStatService
 
+//var ca config.Certificate
+
 type fstatServer struct{}
 
 func (*fstatServer) GetFolderStatByDate(cxt context.Context, param *pb.GetFolderStatByDateRequest) (*pb.GetFolderStatByDateResponse, error) {
@@ -31,12 +35,31 @@ func (*fstatServer) GetFolderStatNow(ctx context.Context, param *pb.GetFolderSta
 	return result, err
 }
 
+/*
+func init() {
+	conf, err := config.LoadConfig()
+	if err != nil {
+		panic(err)
+	}
+	var keys []string
+	keys = append(keys, "Certificate")
+	err = config.CheckConfig(conf, keys)
+	if err != nil {
+		panic(err)
+	}
+	ca = conf.Certificate
+} */
 func main() {
 	lis, err := net.Listen("tcp", port)
 	log.Println("server start")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+	/* 	creds, err := credentials.NewServerTLSFromFile(ca.CertFile, ca.KeyFile)
+	   	if err != nil {
+	   		log.Fatalf("could not load keys: %s", err)
+	   	}
+	   	opts := []grpc.DialOption{grpc.WithTransportCredentials(creds)} */
 	s := grpc.NewServer()
 	pb.RegisterFolderstatServiceServer(s, &fstatServer{})
 	reflection.Register(s)
