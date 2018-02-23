@@ -25,7 +25,7 @@ func init() {
 		panic(err)
 	}
 	var keys []string
-	keys = append(keys, "taskcenter")
+	keys = append(keys, "Taskcenter")
 	err = cnf.CheckConfig(conf, keys)
 	if err != nil {
 		panic(err)
