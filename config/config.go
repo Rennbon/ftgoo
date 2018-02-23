@@ -37,9 +37,19 @@ func LoadConfig() (*Config, error) {
 }
 
 func CheckConfig(c *Config, cnames []string) error {
-	s := reflect.ValueOf(&c).Elem()
+	s := reflect.ValueOf(c).Elem()
 	for _, v := range cnames {
-		if s.FieldByName(v).Interface() == nil {
+		val := s.FieldByName(v)
+		typ := val.Type()
+		def := reflect.New(typ).Elem()
+		flag := 0
+		i := 0
+		for ; i < val.NumField(); i++ {
+			if val.Field(i).Interface() == def.Field(i).Interface() {
+				flag++
+			}
+		}
+		if i == flag {
 			return fmt.Errorf("%v is not find in config", v)
 		}
 	}
