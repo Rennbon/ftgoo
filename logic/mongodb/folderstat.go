@@ -129,7 +129,7 @@ func (FolderStatService) GetFolderStatByDate(request *pb.GetFolderStatByDateRequ
 					},
 				)
 			if !existFlag {
-				fstses = append(fstses, &FolderStatistics{Date: tempDate, FolderId: request.FolderId})
+				fstses = append(fstses, &FolderStatistics{Date: tempDate, CreateTime: tempDate, FolderId: request.FolderId})
 			}
 		}
 	}
@@ -159,6 +159,7 @@ func (FolderStatService) GetFolderStatNow(request *pb.GetFolderStatNowRequest) (
 	if err != nil {
 		return nil, err
 	}
+	fsts.CreateTime = dateNow
 	response.Result = &pb.ExecuteResponse{Success: true, ErrMsg: ""}
 	response.Folderstat = cvt_mg_pb_folderstatsone(fsts)
 	return response, nil
