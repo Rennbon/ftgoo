@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  fs_server:
+    image: www.rennbon.com/fgtoo/fs_server:1.0
+    volumes:
+      - "./config.yml:/app/config.yml"
+      - "/etc/localtime:/etc/localtime:ro"
+    ports:
+      - "9091:9091"
+    expose:
+      - "9091"
+
