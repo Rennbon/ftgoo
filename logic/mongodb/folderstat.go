@@ -159,7 +159,12 @@ func (FolderStatService) GetFolderStatNow(request *pb.GetFolderStatNowRequest) (
 	if err != nil {
 		return nil, err
 	}
-	fsts.CreateTime = dateNow
+	if fsts != nil {
+		fsts = &FolderStatistics{}
+		fsts.Date = dateNow
+		fsts.FolderId = request.FolderId
+		fsts.CreateTime = dateNow
+	}
 	response.Result = &pb.ExecuteResponse{Success: true, ErrMsg: ""}
 	response.Folderstat = cvt_mg_pb_folderstatsone(fsts)
 	return response, nil
@@ -177,6 +182,7 @@ func aggregateFolderStats(tasks []*Task, folderId string, compareTime time.Time,
 	fsts := &FolderStatistics{}
 	fsts.FolderId = folderId
 	fsts.Date = date
+	fsts.CreateTime = date
 	fsts.Amount = tasksCount
 	var (
 		chargeIds []string //存负责人总数
@@ -184,51 +190,53 @@ func aggregateFolderStats(tasks []*Task, folderId string, compareTime time.Time,
 	)
 
 	for _, task := range tasks {
-		chargeIds = append(chargeIds, task.ChargeAccountId)
-		for _, member := range task.Members {
-			if member.Status == Cs_Normal && (member.Type == Cs_Member || member.Type == Cs_Releaser) {
-				memberIds = append(memberIds, member.AId)
+		go func(task *Task) {
+			chargeIds = append(chargeIds, task.ChargeAccountId)
+			for _, member := range task.Members {
+				if member.Status == Cs_Normal && (member.Type == Cs_Member || member.Type == Cs_Releaser) {
+					memberIds = append(memberIds, member.AId)
+				}
 			}
-		}
-		if tool.GetDate(task.CreateTime) == date {
-			fsts.NewTasks++
-		}
+			if tool.GetDate(task.CreateTime) == date {
+				fsts.NewTasks++
+			}
 
-		if task.Status == Cs_Incomplete { //进行中
-			fsts.Underway++ //进行中任务书
-			if task.Deadline.After(compareTime) {
-				fsts.Underway_N++ //正常状态进行中任务数
-				if task.Deadline.After(maxDate) {
-					fsts.Underway_U++ //未设定截止日期的进行中任务数
+			if task.Status == Cs_Incomplete { //进行中
+				fsts.Underway++ //进行中任务书
+				if task.Deadline.After(compareTime) {
+					fsts.Underway_N++ //正常状态进行中任务数
+					if task.Deadline.After(maxDate) {
+						fsts.Underway_U++ //未设定截止日期的进行中任务数
+					} else {
+
+					}
 				} else {
+					fsts.Underway_A++                                                  //逾期进行中任务数
+					fsts.Timespan_Und += int64(compareTime.Sub(task.Deadline).Hours()) //进行中任务总逾期时间 单位：小时
 
 				}
-			} else {
-				fsts.Underway_A++                                                  //逾期进行中任务数
-				fsts.Timespan_Und += int64(compareTime.Sub(task.Deadline).Hours()) //进行中任务总逾期时间 单位：小时
 
-			}
+				if task.Deadline.Before(maxDate) {
+					fsts.Timespan_BurnDown += int64(task.Deadline.Sub(compareTime).Hours()) //时间燃尽图
+				}
 
-			if task.Deadline.Before(maxDate) {
-				fsts.Timespan_BurnDown += int64(task.Deadline.Sub(compareTime).Hours()) //时间燃尽图
-			}
+			} else { //已完成
+				fsts.Completed++ //已完成任务总数
+				if task.Deadline.Before(task.StatusModifyTime) {
+					fsts.Timespan_Com += int64(task.StatusModifyTime.Sub(task.Deadline).Hours()) //已完成任务总逾期时间 单位：小时
+					fsts.Completed_A++                                                           //逾期已完成任务总数
+				} else {
+					fsts.Completed_N++ //正常已完成任务数
+					if task.Deadline == maxDate {
+						fsts.Completed_U++ //未设定截止日期已完成任务数
+					}
+				}
 
-		} else { //已完成
-			fsts.Completed++ //已完成任务总数
-			if task.Deadline.Before(task.StatusModifyTime) {
-				fsts.Timespan_Com += int64(task.StatusModifyTime.Sub(task.Deadline).Hours()) //已完成任务总逾期时间 单位：小时
-				fsts.Completed_A++                                                           //逾期已完成任务总数
-			} else {
-				fsts.Completed_N++ //正常已完成任务数
-				if task.Deadline == maxDate {
-					fsts.Completed_U++ //未设定截止日期已完成任务数
+				if tool.GetDate(task.StatusModifyTime) == date {
+					fsts.CompletedTasks++
 				}
 			}
-
-			if tool.GetDate(task.StatusModifyTime) == date {
-				fsts.CompletedTasks++
-			}
-		}
+		}(task)
 	}
 	if fsts.Underway_A > 0 && fsts.Timespan_Und == 0 {
 		fsts.Timespan_Und = 1
