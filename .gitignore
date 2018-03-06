@@ -14,3 +14,4 @@
 debug
 vendor/*
 cmd/fsgrpc/fs_server/vendor/*
+cmd/fsdaily/vendor/*
