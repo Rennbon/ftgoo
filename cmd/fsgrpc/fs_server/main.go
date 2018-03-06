@@ -54,6 +54,7 @@ func main() {
 	log.Println("server start")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
+		return
 	}
 	/* 	creds, err := credentials.NewServerTLSFromFile(ca.CertFile, ca.KeyFile)
 	   	if err != nil {

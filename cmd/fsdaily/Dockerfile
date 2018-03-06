@@ -1,7 +1,6 @@
-FROM golang:latest
+FROM golang:1.9.1
 
-WORKDIR $GOPATH/src/ftgoo/cmd/fsdaily
-ADD . $GOPATH/src/ftgoo/cmd/fsdaily
-RUN go build .
+WORKDIR /app
+ADD myapp /app/
 
-ENTRYPOINT ["./ftgoo/cmd/fsdaily"]
+ENTRYPOINT ["./myapp"]
