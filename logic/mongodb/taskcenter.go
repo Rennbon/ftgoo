@@ -89,15 +89,15 @@ func (taskCenter) GetFolderDailyStatisticsByDate(folderId string, startTime time
 
 /* 插入项目统计
 fsts:项目统计实体 */
-func (taskCenter) InsertFolderStatistics(fsts *FolderStatistics) (bool, error) {
+func (taskCenter) InsertFolderStatistics(fsts *FolderStatistics) error {
 	if fsts == nil {
-		return false, errors.ERR_PARAMETER
+		return errors.ERR_PARAMETER
 	}
 	session, col := FolderStatColProvider()
 	defer session.Close()
 	err := col.Insert(fsts)
 	if err != nil {
-		return false, err
+		return err
 	}
-	return true, nil
+	return nil
 }
