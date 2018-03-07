@@ -40,10 +40,6 @@ func (FolderStatService) DailyFlushing(date time.Time) error {
 			wg.Add(1)
 			chleft <- dateLeft
 			chright <- dateRight
-			/* err := dailyFlushingBetween(dateLeft, dateRight)
-			if err != nil {
-				log.Println(err)
-			} */
 			dateRight = dateLeft
 			dateLeft = dateRight.AddDate(0, -1, 0)
 		}
@@ -52,7 +48,10 @@ func (FolderStatService) DailyFlushing(date time.Time) error {
 	}()
 	for left := range chleft {
 		go func(left, right time.Time) {
-			dailyFlushingBetween(left, right)
+			err := dailyFlushingBetween(left, right)
+			if err != nil {
+				log.Println(err)
+			}
 			wg.Done()
 		}(left, <-chright)
 	}
@@ -73,26 +72,32 @@ func dailyFlushingBetween(start time.Time, end time.Time) error {
 	effd := 0
 	//遍历项目
 	for _, folder := range folders {
+		//go func(folder *Folder) {
 		tasks, err := tcdb.GetTasksByFolderIdAndTime(folder.FolderId, dateNow)
 		if err != nil {
 			log.Print(err)
 			continue
+			//return
 		}
 		fsts, err := aggregateFolderStats(tasks, folder.FolderId, ddCompare, fstsDate)
 		if err != nil {
 			log.Print(err)
 			continue
+			//return
 		}
 		if fsts == nil {
 			continue
+			//return
 		}
 		fsts.CreateTime = time.Now().Local()
 		err = tcdb.InsertFolderStatistics(fsts)
 		if err != nil {
 			log.Print(err)
 			continue
+			//return
 		}
 		effd++
+		//}(folder)
 		//log.Println("folder:", folder.FolderId, "completed!")
 	}
 	log.Print(start.Format("2006-01-02"), "-", end.Format("2006-01-02"),
