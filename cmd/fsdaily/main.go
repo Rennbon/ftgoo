@@ -12,8 +12,8 @@ import (
 func main() {
 	c := cron.New()
 	a := mongodb.FolderStatService{}
-	//spec := "@daily"
-	spec := "20 17 * * * *"
+	spec := "@daily"
+	//spec := "20 17 * * * *"
 	c.AddFunc(spec, func() {
 		log.Println("daily service has started")
 		a.DailyFlushing(time.Now().Local())
