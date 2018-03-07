@@ -5,7 +5,7 @@
   branch = "master"
   name = "github.com/Rennbon/ftgoo"
   packages = ["config","logic/errors","logic/folderstat","logic/mongodb","tool"]
-  revision = "8b79901b6db793306dc9d47100aaefeb944c4e15"
+  revision = "a3ea5af0416bd1992abc85d272a6373f18c8e655"
 
 [[projects]]
   name = "github.com/ahmetb/go-linq"

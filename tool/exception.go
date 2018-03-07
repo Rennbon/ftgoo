@@ -4,11 +4,10 @@ import (
 	"log"
 )
 
-func CallRecover(fun func()) {
+func CallRecover() {
 	defer func() {
 		if err := recover(); err != nil {
-			log.Println(err)
+			log.Println("recover from ", err)
 		}
 	}()
-	fun()
 }
