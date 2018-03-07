@@ -5,7 +5,7 @@
   branch = "master"
   name = "github.com/Rennbon/ftgoo"
   packages = ["config","logic/errors","logic/folderstat","logic/mongodb","tool"]
-  revision = "36290d3bdf3b94b66bff8467fd2b8b7d0e75d743"
+  revision = "528c1b2b1338425b721f8e461b9922d77fa71406"
 
 [[projects]]
   name = "github.com/ahmetb/go-linq"
@@ -83,7 +83,7 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = ["context","http2","http2/hpack","idna","internal/timeseries","lex/httplex","trace"]
-  revision = "22ae77b79946ea320088417e4d50825671d82d57"
+  revision = "d25186b37f34ebdbbea8f488ef055638dfab272d"
 
 [[projects]]
   branch = "master"
@@ -101,7 +101,7 @@
   branch = "master"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
-  revision = "2c5e7ac708aaa719366570dd82bda44541ca2a63"
+  revision = "df60624c1e9b9d2973e889c7a1cff73155da81c4"
 
 [[projects]]
   name = "google.golang.org/grpc"

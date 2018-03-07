@@ -13,6 +13,7 @@ import (
 type Config struct {
 	TaskCenter  Taskcenter
 	Certificate Certificate
+	Cronspec    string
 }
 
 var filePath string
