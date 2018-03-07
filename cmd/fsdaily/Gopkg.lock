@@ -5,7 +5,7 @@
   branch = "master"
   name = "github.com/Rennbon/ftgoo"
   packages = ["config","logic/errors","logic/folderstat","logic/mongodb","tool"]
-  revision = "528c1b2b1338425b721f8e461b9922d77fa71406"
+  revision = "eff15bd71b19b63d908f63491f906d9bd5775513"
 
 [[projects]]
   name = "github.com/ahmetb/go-linq"
@@ -130,6 +130,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f7460ac92c88ccb163e8e27889987800f13071f1ecdc132fc090a639116216e6"
+  inputs-digest = "8498ac35fdb0871373b93bda78057ec04b48536cde596d6d1ce24b0f79582382"
   solver-name = "gps-cdcl"
   solver-version = 1
