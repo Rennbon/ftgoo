@@ -2,6 +2,8 @@ package mongodb
 
 import (
 	"log"
+	"runtime"
+	"sync"
 	"time"
 
 	"github.com/Rennbon/ftgoo/tool"
@@ -24,22 +26,40 @@ func (FolderStatService) DailyFlushing(date time.Time) error {
 	dateRight := tool.GetDate(date)
 	dateLeft := dateRight.AddDate(0, -1, 0)
 	iceAge := time.Date(2005, 1, 1, 0, 0, 0, 0, time.Local)
-	//iceAge := time.Date(2017, 1, 1, 0, 0, 0, 0, time.Local)
-	i := 0
-	for {
-		if dateLeft.Before(iceAge) || i > 10000 {
-			break
+	runtime.GOMAXPROCS(runtime.NumCPU())
+	chleft := make(chan time.Time)
+	chright := make(chan time.Time)
+	wg := sync.WaitGroup{}
+	go func() {
+		i := 0
+		for {
+			if dateLeft.Before(iceAge) || i > 10000 {
+				break
+			}
+			i++
+			wg.Add(1)
+			chleft <- dateLeft
+			chright <- dateRight
+			/* err := dailyFlushingBetween(dateLeft, dateRight)
+			if err != nil {
+				log.Println(err)
+			} */
+			dateRight = dateLeft
+			dateLeft = dateRight.AddDate(0, -1, 0)
 		}
-		i++
-		err := dailyFlushingBetween(dateLeft, dateRight)
-		if err != nil {
-			log.Println(err)
-		}
-		dateRight = dateLeft
-		dateLeft = dateRight.AddDate(0, -1, 0)
+		close(chleft)
+		close(chright)
+	}()
+	for left := range chleft {
+		go func(left, right time.Time) {
+			dailyFlushingBetween(left, right)
+			wg.Done()
+		}(left, <-chright)
 	}
+	wg.Wait()
 	return nil
 }
+
 func dailyFlushingBetween(start time.Time, end time.Time) error {
 	defer tool.CallRecover()
 	folders, err := tcdb.GetFoldersCreateTimeBetween(start, end)
