@@ -193,7 +193,7 @@ func (FolderStatService) GetFolderStatNow(request *pb.GetFolderStatNowRequest) (
 	if err != nil {
 		return nil, err
 	}
-	if fsts != nil {
+	if fsts == nil {
 		fsts = &FolderStatistics{}
 		fsts.Date = dateNow
 		fsts.FolderId = request.FolderId
@@ -205,7 +205,7 @@ func (FolderStatService) GetFolderStatNow(request *pb.GetFolderStatNowRequest) (
 }
 
 /* 聚合任务到项目统计实体
-tasks:任务数组，folderId:�������������id，compareTime:��比�����时间,date:统计所属时间段，
+tasks:任务数组，folderId:项目id，compareTime:对比时间,date:统计所属时间段，
 createTime未赋值,tasks len=0��返回nil,nil */
 func aggregateFolderStats(tasks []*Task, folderId string, compareTime time.Time, date time.Time) (*FolderStatistics, error) {
 	defer tool.CallRecover()

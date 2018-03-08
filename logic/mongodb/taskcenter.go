@@ -70,7 +70,7 @@ func (taskCenter) GetTasksByFolderIdAndTime(folderId string, date time.Time) ([]
 /* 获取时间段统计
 folderId:项目id,startTime:开始时间，endTime:截止时间 */
 func (taskCenter) GetFolderDailyStatisticsByDate(folderId string, startTime time.Time, endTime time.Time) ([]*FolderStatistics, error) {
-	session, col := FolderColProvider()
+	session, col := FolderStatColProvider()
 	defer session.Close()
 	query := bson.M{
 		"fid": folderId,
