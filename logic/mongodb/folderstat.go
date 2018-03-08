@@ -26,7 +26,7 @@ func (FolderStatService) DailyFlushing(date time.Time) error {
 	dateRight := tool.GetDate(date)
 	dateLeft := dateRight.AddDate(0, -1, 0)
 	iceAge := time.Date(2005, 1, 1, 0, 0, 0, 0, time.Local)
-	runtime.GOMAXPROCS(runtime.NumCPU())
+	runtime.GOMAXPROCS(2)
 	chleft := make(chan time.Time)
 	chright := make(chan time.Time)
 	wg := sync.WaitGroup{}
