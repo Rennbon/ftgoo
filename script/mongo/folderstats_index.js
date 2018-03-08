@@ -1,0 +1,1 @@
+db.folderStatisticsNew.createIndex({fid:1,dt:1},{name:"index_fid_dt",background:1})
